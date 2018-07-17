@@ -169,12 +169,12 @@ function Get-Computer {
                     $result = $Computer
                     $result_Array+=$result
                     $count+=1
-                    write-host "User $Username is logged on $Computer" -foregroundcolor $foregroundcolor
+                    write-host "User $Username is logged on $Computer  (" $comp.IPv4Address ")" -foregroundcolor $foregroundcolor
                 }
             }
         }    		
     }
-    if ($result_Array) { write-host "User $Username is logged on $count machines: $result_Array" -foregroundcolor $foregroundcolor}
+    if ($result_Array) { write-host "User $Username is logged on $count machine(s): $result_Array" -foregroundcolor $foregroundcolor}
     else {Write-host "No results found for $Username" -foregroundcolor $foregroundcolor}
     $result = ""
 }
