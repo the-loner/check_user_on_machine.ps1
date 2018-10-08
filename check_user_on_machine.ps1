@@ -33,7 +33,6 @@
 function Write-Menu {
 do {
     
-
 		Write-Host `n"SDP La Stampa" $ncVer -ForeGroundColor $foregroundcolor
 		Write-Host `n"'q' o per uscire"`n
 		Write-Host -NoNewLine "<" -foregroundcolor $foregroundColor
