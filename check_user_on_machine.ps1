@@ -151,7 +151,7 @@ function Get-Computer {
     $result = ""
     $result_Array = @()
     $count = 0
-    $computers = Get-ADComputer -filter * -Property * -SearchBase $cercaIn | Where-Object OperatingSystem -like  "*Windows 7*" | Where-Object {$_.Enabled -eq "True"}
+    $computers = Get-ADComputer -filter * -Property * -SearchBase $cercaIn | Where-Object OperatingSystem -like  "*Windows 7*" | Where-Object {$_.Enabled -eq "True"} 
     $total = $computers.Count
     Write-Host "Total Computers= $total"
     foreach ($comp in $computers) {
@@ -161,19 +161,22 @@ function Get-Computer {
 	
         if (Test-Connection -BufferSize 32 -Count 1 -ComputerName $comp.Name -Quiet) {
             #Get explorer.exe processes
-		if($proc = Get-WmiObject win32_process -computer $Computer -Filter "Name = 'explorer.exe'")
-		{
-		    #Search collection of processes for username
-		    ForEach ($p in $proc) {
-			$temp = ($p.GetOwner()).User
-			if ($temp -eq $Username) {
-			    $result = $Computer
-			    $result_Array+=$result
-			    $count+=1
-			    write-host "User $Username is logged on $Computer  (" $comp.IPv4Address ")" -foregroundcolor $foregroundcolor
-						  }
-		}
-            }
+            try{
+                if($proc = Get-WmiObject win32_process -computer $Computer -Filter "Name = 'explorer.exe'")
+                {
+                    #Search collection of processes for username
+                    ForEach ($p in $proc) {
+                    $temp = ($p.GetOwner()).User
+                    if ($temp -eq $Username) {
+                        $result = $Computer
+                        $result_Array+=$result
+                        $count+=1
+                        write-host "User $Username is logged on $Computer  (" $comp.IPv4Address ")" -foregroundcolor $foregroundcolor
+                                }
+                                        }
+                }
+        } 
+        catch{ write-host $_.exception.Message`n -foregroundColor Red} 
         }    		
     }
     if ($result_Array) { write-host "User $Username is logged on $count machine(s): $result_Array" -foregroundcolor $foregroundcolor}
