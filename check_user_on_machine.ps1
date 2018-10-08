@@ -161,16 +161,18 @@ function Get-Computer {
 	
         if (Test-Connection -BufferSize 32 -Count 1 -ComputerName $comp.Name -Quiet) {
             #Get explorer.exe processes
-            $proc = Get-WmiObject win32_process -computer $Computer -Filter "Name = 'explorer.exe'"
-            #Search collection of processes for username
-            ForEach ($p in $proc) {
-                $temp = ($p.GetOwner()).User
-                if ($temp -eq $Username) {
-                    $result = $Computer
-                    $result_Array+=$result
-                    $count+=1
-                    write-host "User $Username is logged on $Computer  (" $comp.IPv4Address ")" -foregroundcolor $foregroundcolor
-                }
+		if($proc = Get-WmiObject win32_process -computer $Computer -Filter "Name = 'explorer.exe'")
+		{
+		    #Search collection of processes for username
+		    ForEach ($p in $proc) {
+			$temp = ($p.GetOwner()).User
+			if ($temp -eq $Username) {
+			    $result = $Computer
+			    $result_Array+=$result
+			    $count+=1
+			    write-host "User $Username is logged on $Computer  (" $comp.IPv4Address ")" -foregroundcolor $foregroundcolor
+						  }
+		}
             }
         }    		
     }
